@@ -2,11 +2,18 @@
   "name": "v-trend",
   "version": "1.0.0",
   "description": "Github flavored spark line in Vue.js",
-  "keywords": ["vue.js", "sparkline", "trend", "svg"],
+  "keywords": [
+    "vue.js",
+    "sparkline",
+    "trend",
+    "svg"
+  ],
   "main": "dist/v-trend.common.js",
   "module": "dist/v-trend.esm.js",
   "unpkg": "dist/v-trend.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "server": "browser-sync start --server --reload-delay 1 --files \"index.html, ./dist/**\"",
     "build:watch": "cross-env NODE_ENV=development rollup -c rollup.config.js -w",
