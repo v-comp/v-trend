@@ -3,10 +3,6 @@ import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import vue from 'rollup-plugin-vue';
 import replace from 'rollup-plugin-replace';
-import postcss from 'rollup-plugin-postcss';
-import postcssModules from 'postcss-modules';
-import cssnano from 'cssnano';
-const cssExportMap = {};
 
 const isDEV = process.env.NODE_ENV !== 'production';
 
@@ -26,20 +22,6 @@ export default {
   plugins: [
     replace({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-    }),
-    postcss({
-      plugins: [
-        postcssModules({
-          getJSON(id, exportTokens) {
-            cssExportMap[id] = exportTokens;
-          }
-        }),
-        cssnano()
-      ],
-      getExport(id) {
-        return cssExportMap[id];
-      },
-      extensions: ['.css']
     }),
     vue({
       css: false,
