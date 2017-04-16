@@ -41,37 +41,6 @@ function getSmoothPath(points) {
   return path;
 }
 
-(function(){ if(document){ var head=document.head||document.getElementsByTagName('head')[0], style=document.createElement('style'), css=""; style.type='text/css'; if (style.styleSheet){ style.styleSheet.cssText = css; } else { style.appendChild(document.createTextNode(css)); } head.appendChild(style); } })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var linearGradientUid = 0;
 var idPrefix = 'vTrEnD';
 var defaultGradientStops = [
