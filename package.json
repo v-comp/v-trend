@@ -31,10 +31,9 @@
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-vue": "^2.2.20",
-    "rollup-watch": "^3.2.2"
-  },
-  "dependencies": {
-    "classnames": "^2.2.5"
+    "rollup-watch": "^3.2.2",
+    "vue-github-badge": "^1.0.0",
+    "hanabi": "^0.4.0"
   },
   "license": "MIT",
   "repository": {

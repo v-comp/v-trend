@@ -5,18 +5,31 @@
         <stop v-for="stop in stops" :offset="stop.offset" :stop-color="stop.color"></stop>
       </linearGradient>
       <mask :id="maskId" x="0" y="0" width="100%" height="100%">
-        <polyline :points="points" fill="transparent" stroke="#8cc665" 
-        transform="scale(1, 1)"
-        :stroke-width="strokeWidth"></polyline>
+        <polyline
+          v-if="!useBezier"
+          :points="path"
+          :stroke-width="strokeWidth"
+          fill="transparent"
+          stroke="#8cc665"
+          ref="path"
+        ></polyline>
+        <path
+          v-if="useBezier"
+          :d="path"
+          :stroke-width="strokeWidth"
+          fill="transparent"
+          stroke="#8cc665"
+          ref="path"></path>
       </mask>
     </defs>
-    <g transform="scale(1, 1)">
+    <g>
       <rect x="0" y="0" width="100%" height="100%" :style="rectStyle"></rect>
     </g>
   </svg>
 </template>
 
 <script>
+import getSmoothPath from './smooth.js';
 let linearGradientUid = 0;
 const idPrefix = 'vTrEnD';
 const defaultGradientStops = [
@@ -26,28 +39,36 @@ const defaultGradientStops = [
   '#196127'
 ];
 const percent = n => (n * 100) + '%';
-const toFixed = (n, d = 2) => n.toFixed(d);
+const toFixed = (n, d = 2) => +n.toFixed(d);
 
 export default {
   name: 'v-trend',
   props: {
     width: {
-      type: [Number, String],
+      type: Number,
       default: 155
     },
     height: {
-      type: [Number, String],
+      type: Number,
       default: 30
     },
     strokeWidth: {
-      type: [Number, String],
+      type: Number,
       default: 2.0
     },
-    gradients:{
+    padding: {
+      type: Number,
+      default: 5
+    },
+    gradients: {
       type: Array,
       default() {
         return defaultGradientStops.slice(0);
       }
+    },
+    smooth: {
+      type: Boolean,
+      default: false
     },
     data: String
   },
@@ -65,6 +86,9 @@ export default {
     };
   },
   computed: {
+    useBezier() {
+      return this.smooth && this.data.length > 2;
+    },
     stops() {
       const divider = this.gradients.length - 1;
       return this.gradients.map((color, i) => ({
@@ -73,24 +97,40 @@ export default {
       }));
     },
     points() {
-      const w = this.width;
-      const h = this.height;
+      const p = this.padding;
+      const w = this.width  - p * 2;
+      const h = this.height - p * 2;
       const s = this.strokeWidth;
-      const data = this.data;
+      const data = this.data.length >= 2 ? this.data : [this.data[0] || 0, 0, 0];
       const yMin = Math.min.apply(Math, data) - s/2;
       const yMax = Math.max.apply(Math, data) + s/2;
       const xUnit = w / data.length;
       const yUnit = h / (yMax - yMin);
+
       return data.map((d, i) => {
-          const x = toFixed(i * xUnit, 5);
-          const y = toFixed(h - (d - yMin)* yUnit, 5);
-          return `${x},${y}`;
-        }).join(' ');
+          const x = toFixed(i * xUnit, 5) + p;
+          const y = toFixed(h - (d - yMin)* yUnit, 5) + p;
+          return { x, y };
+        });
     },
     viewBox() {
       const w = this.width;
       const h = this.height;
       return `0 0 ${w} ${h}`;
+    },
+    path() {
+      return this.makePath(this.points);
+    }
+  },
+  methods: {
+    makePath(points) {
+      if (this.useBezier) {
+        return getSmoothPath(points);
+      } else {
+        return points
+          .map(({x, y}) => `${x},${y}`)
+          .join(' ');
+      }
     }
   }
 };

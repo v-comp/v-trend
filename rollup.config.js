@@ -24,7 +24,7 @@ export default {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
     vue({
-      css: false,
+      css: true,
       compileTemplate: true
     }),
     commonjs(),
