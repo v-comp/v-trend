@@ -35,9 +35,9 @@ function getSmoothPath(points) {
   return path;
 }
 
-var linearGradientUid = 0;
-var idPrefix = 'vTrEnD';
-var defaultGradientStops = [
+var uid = 0;
+var prefix = 'vTrEnD';
+var defaultColors = [
   '#c6e48b',
   '#7bc96f',
   '#239a3b',
@@ -50,7 +50,7 @@ var toFixed = function (n, d) {
   return +n.toFixed(d);
 };
 
-var VTrendComponent$1 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('svg',{attrs:{"width":_vm.width,"height":_vm.height,"viewBox":_vm.viewBox}},[_c('defs',[_c('linearGradient',{attrs:{"id":_vm.gradId,"x1":"0","x2":"0","y1":"1","y2":"0"}},_vm._l((_vm.stops),function(stop){return _c('stop',{attrs:{"offset":stop.offset,"stop-color":stop.color}})})),_c('mask',{attrs:{"id":_vm.maskId,"x":"0","y":"0","width":"100%","height":"100%"}},[(!_vm.useBezier)?_c('polyline',{ref:"path",attrs:{"points":_vm.path,"stroke-width":_vm.strokeWidth,"fill":"transparent","stroke":"#8cc665"}}):_vm._e(),(_vm.useBezier)?_c('path',{ref:"path",attrs:{"d":_vm.path,"stroke-width":_vm.strokeWidth,"fill":"transparent","stroke":"#8cc665"}}):_vm._e()])],1),_c('g',[_c('rect',{style:(_vm.rectStyle),attrs:{"x":"0","y":"0","width":"100%","height":"100%"}})])])},staticRenderFns: [],
+var VTrendComp$1 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('svg',{attrs:{"width":_vm.width,"height":_vm.height,"viewBox":_vm.viewBox}},[_c('defs',[_c('linearGradient',{attrs:{"id":_vm.gradId,"x1":"0","x2":"0","y1":"1","y2":"0"}},_vm._l((_vm.stops),function(stop){return _c('stop',{attrs:{"offset":stop.offset,"stop-color":stop.color}})})),_c('mask',{attrs:{"id":_vm.maskId,"x":"0","y":"0","width":"100%","height":"100%"}},[(!_vm.isSmooth)?_c('polyline',{ref:"path",attrs:{"points":_vm.path,"stroke-width":_vm.strokeWidth,"fill":"transparent","stroke":"#8cc665"}}):_vm._e(),(_vm.isSmooth)?_c('path',{ref:"path",attrs:{"d":_vm.path,"stroke-width":_vm.strokeWidth,"fill":"transparent","stroke":"#8cc665"}}):_vm._e()])],1),_c('g',[_c('rect',{style:(_vm.rectStyle),attrs:{"x":"0","y":"0","width":"100%","height":"100%"}})])])},staticRenderFns: [],
   name: 'v-trend',
   props: {
     width: {
@@ -72,18 +72,23 @@ var VTrendComponent$1 = {render: function(){var _vm=this;var _h=_vm.$createEleme
     gradients: {
       type: Array,
       default: function default$1() {
-        return defaultGradientStops.slice(0);
+        return defaultColors.slice(0);
       }
     },
     smooth: {
       type: Boolean,
       default: false
     },
-    data: String
+    data: {
+      type: Array,
+      default: function default$2() {
+        return [];
+      }
+    },
   },
   data: function data() {
-    var gradId = idPrefix + "-grad-" + (linearGradientUid++);
-    var maskId = idPrefix + "-mask-" + (linearGradientUid++);
+    var gradId = prefix + "-grad-" + (uid++);
+    var maskId = prefix + "-mask-" + (uid++);
     return {
       gradId: gradId,
       maskId: maskId,
@@ -95,7 +100,7 @@ var VTrendComponent$1 = {render: function(){var _vm=this;var _h=_vm.$createEleme
     };
   },
   computed: {
-    useBezier: function useBezier() {
+    isSmooth: function isSmooth() {
       return this.smooth && this.data.length > 2;
     },
     stops: function stops() {
@@ -133,7 +138,7 @@ var VTrendComponent$1 = {render: function(){var _vm=this;var _h=_vm.$createEleme
   },
   methods: {
     makePath: function makePath(points) {
-      if (this.useBezier) {
+      if (this.isSmooth) {
         return getSmoothPath(points);
       } else {
         return points
@@ -149,9 +154,13 @@ var VTrendComponent$1 = {render: function(){var _vm=this;var _h=_vm.$createEleme
   }
 };
 
-VTrendComponent$1.install =  function (Vue) {
-  Vue.component(VTrendComponent$1.name, VTrendComponent$1 );
+VTrendComp$1.install =  function (Vue) {
+  Vue.component(VTrendComp$1.name, VTrendComp$1);
 };
 
-export default VTrendComponent$1;
+if (window.Vue && Vue.use) {
+  window.Vue.use(VTrendComp$1);
+}
+
+export default VTrendComp$1;
 //# sourceMappingURL=v-trend.esm.js.map
