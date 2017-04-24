@@ -1,38 +1,60 @@
-<template>
-  <svg :width="width" :height="height" :viewBox="viewBox">
-    <defs>
-      <linearGradient :id="gradId" x1="0" x2="0" y1="1" y2="0">
-        <stop v-for="stop in stops" :offset="stop.offset" :stop-color="stop.color"></stop>
-      </linearGradient>
-      <mask :id="maskId" x="0" y="0" width="100%" height="100%">
-        <polyline
-          v-if="!useBezier"
-          :points="path"
-          :stroke-width="strokeWidth"
-          fill="transparent"
-          stroke="#8cc665"
-          ref="path"
-        ></polyline>
-        <path
-          v-if="useBezier"
-          :d="path"
-          :stroke-width="strokeWidth"
-          fill="transparent"
-          stroke="#8cc665"
-          ref="path"></path>
-      </mask>
-    </defs>
-    <g>
-      <rect x="0" y="0" width="100%" height="100%" :style="rectStyle"></rect>
-    </g>
-  </svg>
+<template lang="pug">
+svg(
+  :width="width",
+  :height="height",
+  :viewBox="viewBox"
+)
+  defs
+    linearGradient(
+      :id="gradId",
+      x1="0",
+      x2="0",
+      y1="1",
+      y2="0"
+    )
+      stop(
+        v-for="stop in stops",
+        :offset="stop.offset",
+        :stop-color="stop.color"
+      )
+    mask(
+      :id="maskId",
+      x="0",
+      y="0",
+      width="100%",
+      height="100%"
+    )
+      polyline(
+        v-if="!isSmooth",
+        :points="path",
+        :stroke-width="strokeWidth",
+        fill="transparent",
+        stroke="#8cc665",
+        ref="path"
+      )
+      path(
+        v-if="isSmooth",
+        :d="path",
+        :stroke-width="strokeWidth",
+        fill="transparent",
+        stroke="#8cc665",
+        ref="path"
+      )
+  g
+    rect(
+      :style="rectStyle",
+      x="0",
+      y="0",
+      width="100%",
+      height="100%"
+    )
 </template>
 
 <script>
 import getSmoothPath from './smooth.js';
-let linearGradientUid = 0;
-const idPrefix = 'vTrEnD';
-const defaultGradientStops = [
+let uid = 0;
+const prefix = 'vTrEnD';
+const defaultColors = [
   '#c6e48b',
   '#7bc96f',
   '#239a3b',
@@ -63,18 +85,23 @@ export default {
     gradients: {
       type: Array,
       default() {
-        return defaultGradientStops.slice(0);
+        return defaultColors.slice(0);
       }
     },
     smooth: {
       type: Boolean,
       default: false
     },
-    data: String
+    data: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
   },
   data() {
-    const gradId = `${idPrefix}-grad-${linearGradientUid++}`;
-    const maskId = `${idPrefix}-mask-${linearGradientUid++}`;
+    const gradId = `${prefix}-grad-${uid++}`;
+    const maskId = `${prefix}-mask-${uid++}`;
     return {
       gradId,
       maskId,
@@ -86,7 +113,7 @@ export default {
     };
   },
   computed: {
-    useBezier() {
+    isSmooth() {
       return this.smooth && this.data.length > 2;
     },
     stops() {
@@ -124,7 +151,7 @@ export default {
   },
   methods: {
     makePath(points) {
-      if (this.useBezier) {
+      if (this.isSmooth) {
         return getSmoothPath(points);
       } else {
         return points
