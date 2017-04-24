@@ -23,8 +23,9 @@ npm install --save v-trend
 
 ## References And Acknowlegement
 
+- [Drawing a smooth bezier line through several points](https://gielberkers.com/drawing-a-smooth-bezier-line-through-several-points/)
+
 - [vue-trend](https://github.com/QingWei-Li/vue-trend)
 
 - [react-trend](https://github.com/unsplash/react-trend)
 
-- [Drawing a smooth bezier line through several points](https://gielberkers.com/drawing-a-smooth-bezier-line-through-several-points/)
