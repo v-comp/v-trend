@@ -1,7 +1,11 @@
-import VTrendComponent from './v-trend.vue';
+import VTrendComp from './v-trend.vue';
 
-VTrendComponent.install =  Vue => {
-  Vue.component(VTrendComponent.name, VTrendComponent );
+VTrendComp.install =  Vue => {
+  Vue.component(VTrendComp.name, VTrendComp);
 };
 
-export default VTrendComponent;
+if (window.Vue && Vue.use) {
+  window.Vue.use(VTrendComp);
+}
+
+export default VTrendComp;
